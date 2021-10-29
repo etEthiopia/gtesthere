@@ -18,7 +18,7 @@ from random import randint, randrange
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 #s3 = S3Connection(os.environ['TOKEN'], os.environ['ADMIN'])
 
-TOKEN = "2089494586:AAGa43xpJNqnYZbOJcCtM4C6FUvKwbnVJE8"
+TOKEN = "2047797679:AAFGiiTdL4MBJr3uiwBP9LQO1yuh09xbCYQ"
 
 ADMIN = [565110335, 344049097]
 # try:
@@ -65,7 +65,7 @@ class GuzoBusBot:
 
     def handle_image(self, update, ctx):
         chat_id = update.effective_chat.id
-        
+
         if self.messages[chat_id] == "en":
             messages = self.english_messages
         else:
@@ -76,7 +76,7 @@ class GuzoBusBot:
                                   callback_data="back_main")]
         ]
         creply_markup = InlineKeyboardMarkup(ckeyboard)
-        
+
         if self.user_status[chat_id] == "upload_proof_image" and len(self.user_inputs[chat_id]) > 1:
             try:
                 # validates whether the pnr is valid or not
@@ -89,10 +89,10 @@ class GuzoBusBot:
                 # if the message is valid then the bot will ask for a   message
                 if valid:
                     reply_markup = ReplyKeyboardMarkup(
-                        [[messages["cancel"], messages["submit"]]], resize_keyboard=True, one_time_keyboard = True)
+                        [[messages["cancel"], messages["submit"]]], resize_keyboard=True, one_time_keyboard=True)
                     ctx.bot.send_message(chat_id, messages["confirm"])
                     ctx.bot.send_message(
-                        chat_id, messages["phone"]+": "+self.user_inputs[chat_id][1]+"\n"+ "PNR: "+self.user_inputs[chat_id][0], reply_markup=reply_markup)
+                        chat_id, messages["phone"]+": "+self.user_inputs[chat_id][1]+"\n" + "PNR: "+self.user_inputs[chat_id][0], reply_markup=reply_markup)
                     self.user_inputs[chat_id].append(file)
                     self.user_status[chat_id] = "booking_confirmation"
 
@@ -106,7 +106,7 @@ class GuzoBusBot:
                 ctx.bot.send_message(chat_id, messages["wrong_value"])
                 ctx.bot.send_message(chat_id, messages["try_again"])
         elif self.user_status[chat_id] == "upload_weekly_file" and len(self.user_inputs[chat_id]) > 4:
-          ctx.bot.send_message(
+            ctx.bot.send_message(
                 chat_id, messages["send_file"], reply_markup=creply_markup)
 
     def handle_document(self, update, ctx):
@@ -142,8 +142,8 @@ class GuzoBusBot:
                 messages = self.amharic_messages
 
             ckeyboard = [
-            [InlineKeyboardButton(messages["back_to_main"],
-                                  callback_data="back_main")]]
+                [InlineKeyboardButton(messages["back_to_main"],
+                                      callback_data="back_main")]]
             creply_markup = InlineKeyboardMarkup(ckeyboard)
 
             if self.user_status[chat_id] == "upload_weekly_file" and len(self.user_inputs[chat_id]) > 4:
@@ -155,7 +155,7 @@ class GuzoBusBot:
                     # if the message is valid then the bot will ask for a   message
                     if valid:
                         reply_markup = ReplyKeyboardMarkup(
-                            [[messages["cancel"], messages["submit"]]], resize_keyboard=True, one_time_keyboard = True)
+                            [[messages["cancel"], messages["submit"]]], resize_keyboard=True, one_time_keyboard=True)
                         ctx.bot.send_message(chat_id, self.user_inputs[chat_id][0]
                                              + ", " +
                                              messages["file_confirmation"],
@@ -173,11 +173,10 @@ class GuzoBusBot:
                     ctx.bot.send_message(chat_id, messages["wrong_value"])
                     ctx.bot.send_message(chat_id, messages["try_again"])
             elif self.user_status[chat_id] == "upload_proof_image" and len(self.user_inputs[chat_id]) > 1:
-              ctx.bot.send_message(
-                chat_id, messages["send_image"], reply_markup=creply_markup)
+                ctx.bot.send_message(
+                    chat_id, messages["send_image"], reply_markup=creply_markup)
         except Exception as e:
             print(e)
-            
 
     def handle_text(self, update, ctx):
         chat_id = update.effective_chat.id
@@ -283,7 +282,7 @@ class GuzoBusBot:
                 self.user_section.pop(chat_id, None)
                 self.user_inputs.pop(chat_id, None)
                 self.passenger_menu(update, ctx)
-        
+
         # checks if user is in enter name step
         elif self.user_status[chat_id] == "enter_phone" and len(self.user_inputs[chat_id]) > 0:
             try:
@@ -293,26 +292,26 @@ class GuzoBusBot:
                         valid = True
                 if valid:
                     if self.check_pnr(update.message.text, self.user_inputs[chat_id][0]) == True:
-                      ctx.bot.send_message(
-                          chat_id, messages["upload_proof_image"],  reply_markup=creply_markup)
-                      self.user_status[chat_id] = "upload_proof_image"
-                      self.user_inputs[chat_id].append(update.message.text)
+                        ctx.bot.send_message(
+                            chat_id, messages["upload_proof_image"],  reply_markup=creply_markup)
+                        self.user_status[chat_id] = "upload_proof_image"
+                        self.user_inputs[chat_id].append(update.message.text)
                     else:
-                      ctx.bot.send_message(
-                        chat_id, messages["wrong_pnr_credentials"])
-                      ctx.bot.send_message(chat_id, messages["try_again"])
-                      self.user_status.pop(chat_id, None)
-                      self.user_section.pop(chat_id, None)
-                      self.user_inputs.pop(chat_id, None)
-                      self.passenger_menu(update, ctx)
+                        ctx.bot.send_message(
+                            chat_id, messages["wrong_pnr_credentials"])
+                        ctx.bot.send_message(chat_id, messages["try_again"])
+                        self.user_status.pop(chat_id, None)
+                        self.user_section.pop(chat_id, None)
+                        self.user_inputs.pop(chat_id, None)
+                        self.passenger_menu(update, ctx)
                 else:
-                  ctx.bot.send_message(chat_id, messages["wrong_value"])
-                  ctx.bot.send_message(chat_id, messages["try_again"])
+                    ctx.bot.send_message(chat_id, messages["wrong_value"])
+                    ctx.bot.send_message(chat_id, messages["try_again"])
             except Exception as e:
                 print(e)
                 ctx.bot.send_message(chat_id, messages["wrong_value"])
                 ctx.bot.send_message(chat_id, messages["try_again"])
-            
+
         # checks if user is in select message step
         elif self.user_status[chat_id] == "booking_confirmation" and len(self.user_inputs[chat_id]) > 1:
             # validates whether the confirmation is submitted or not
@@ -325,22 +324,23 @@ class GuzoBusBot:
                 dphone = self.user_inputs[chat_id][1]
                 dpnr = self.user_inputs[chat_id][0]
                 for adm in ADMIN:
-                  files = {"photo": open(f"data/{filename}", 'rb')}
-                  ctx.bot.send_message(adm, messages["new_payment_proof"]+
-                #   +"\n@"+update.message.from_user["username"] 
-                  "\n"+messages["phone"]+": 0"+str(int(dphone))
-                  +"\nPNR: "+dpnr+"\n")
-                  resp = requests.post(
-                    "https://api.telegram.org/bot"+TOKEN+"/sendPhoto?chat_id="+str(adm), files=files)
-                  print(resp)
+                    files = {"photo": open(f"data/{filename}", 'rb')}
+                    ctx.bot.send_message(adm, messages["new_payment_proof"] +
+                                         #   +"\n@"+update.message.from_user["username"]
+                                         "\n"+messages["phone"] + \
+                                         ": 0"+str(int(dphone))
+                                         + "\nPNR: "+dpnr+"\n")
+                    resp = requests.post(
+                        "https://api.telegram.org/bot"+TOKEN+"/sendPhoto?chat_id="+str(adm), files=files)
+                    print(resp)
                 self.user_status.pop(chat_id, None)
                 self.user_section.pop(chat_id, None)
                 self.user_inputs.pop(chat_id, None)
-                
+
                 ctx.bot.send_message(
                     chat_id, messages["payment_proof_submitted"], reply_markup=creply_markup)
                 os.remove(f"{CURRENT_DIR}/data/{filename}")
-                
+
             else:
                 self.user_status.pop(chat_id, None)
                 self.user_section.pop(chat_id, None)
@@ -434,13 +434,12 @@ class GuzoBusBot:
                 else:
                     ctx.bot.send_message(chat_id, messages["wrong_date"])
                     ctx.bot.send_message(chat_id, messages["try_again"])
-                    
+
             except Exception as e:
                 print(e)
                 # if the date has an error then the bot will redirect user back to passenger menu
                 ctx.bot.send_message(chat_id, messages["wrong_date"])
                 ctx.bot.send_message(chat_id, messages["try_again"])
-                
 
         # checks if user is in enter number of passengers step
         elif self.user_status[chat_id] == "enter_number_of_passengers" and len(self.user_inputs[chat_id]) > 2:
@@ -466,10 +465,11 @@ class GuzoBusBot:
 
                         self.user_status[chat_id] = "select_bus"
                     else:
-                        keyboard = [[InlineKeyboardButton(messages["back_to_main"], callback_data="back_main")]]
+                        keyboard = [[InlineKeyboardButton(
+                            messages["back_to_main"], callback_data="back_main")]]
                         reply_markup = InlineKeyboardMarkup(keyboard)
                         ctx.bot.send_message(chat_id, messages["for"]+" "+messages["source"]+" : "+self.user_inputs[chat_id][0] +
-                                             " - "+messages["destination"]+" : "+self.user_inputs[chat_id][1]+" "+messages["no_buses_found"], reply_markup = reply_markup)
+                                             " - "+messages["destination"]+" : "+self.user_inputs[chat_id][1]+" "+messages["no_buses_found"], reply_markup=reply_markup)
                         self.user_status.pop(chat_id, None)
                         self.user_section.pop(chat_id, None)
                         self.user_inputs.pop(chat_id, None)
@@ -496,18 +496,17 @@ class GuzoBusBot:
         # checks if user is in select bus step
         elif self.user_status[chat_id] == "select_bus" and len(self.user_inputs[chat_id]) > 3:
             ctx.bot.send_message(
-                        chat_id, messages["enter_name"], reply_markup=creply_markup)
+                chat_id, messages["enter_name"], reply_markup=creply_markup)
             self.user_status[chat_id] = "enter_name"
             self.user_inputs[chat_id].append(update.message.text)
-            
-        
+
         # checks if user is in enter name step
         elif self.user_status[chat_id] == "enter_name" and len(self.user_inputs[chat_id]) > 4:
             ctx.bot.send_message(
-                        chat_id, messages["enter_phone"], reply_markup=creply_markup)
+                chat_id, messages["enter_phone"], reply_markup=creply_markup)
             self.user_status[chat_id] = "enter_phone"
             self.user_inputs[chat_id].append(update.message.text)
-            
+
         # checks if user is in enter phone step
         elif self.user_status[chat_id] == "enter_phone" and len(self.user_inputs[chat_id]) > 5:
             try:
@@ -518,21 +517,23 @@ class GuzoBusBot:
                 # if the pnr is valid then the bot will ask for a code
                 if valid:
                     self.user_inputs[chat_id].append(update.message.text)
-                    busprice = self.seat_reserver(self.user_inputs[chat_id][2], self.user_inputs[chat_id][0], self.user_inputs[chat_id][1], self.user_inputs[chat_id][3], self.user_inputs[chat_id][4])
+                    busprice = self.seat_reserver(self.user_inputs[chat_id][2], self.user_inputs[chat_id][0],
+                                                  self.user_inputs[chat_id][1], self.user_inputs[chat_id][3], self.user_inputs[chat_id][4])
                     randid = randint(10000000, 99999999)
                     if busprice > 0:
                         # bus_book_follow_up
                         self.add_bookings_to_excel([self.user_inputs[chat_id][2], self.user_inputs[chat_id][5],
-                        self.user_inputs[chat_id][6],
-                        self.user_inputs[chat_id][0],
-                        self.user_inputs[chat_id][1],
-                        self.user_inputs[chat_id][2],
-                        self.user_inputs[chat_id][3],
-                        self.user_inputs[chat_id][4],
-                        busprice,
-                        int(int(self.user_inputs[chat_id][3]) *int(busprice)),
-                        randid
-                        ])
+                                                    self.user_inputs[chat_id][6],
+                                                    self.user_inputs[chat_id][0],
+                                                    self.user_inputs[chat_id][1],
+                                                    self.user_inputs[chat_id][2],
+                                                    self.user_inputs[chat_id][3],
+                                                    self.user_inputs[chat_id][4],
+                                                    busprice,
+                                                    int(int(
+                                                        self.user_inputs[chat_id][3]) * int(busprice)),
+                                                    randid
+                                                    ])
                         keyboard = [
                             [InlineKeyboardButton(
                                 messages["back_to_main"], callback_data="back_main")]
@@ -546,42 +547,57 @@ class GuzoBusBot:
                         dseats = self.user_inputs[chat_id][3]
                         dbus = self.user_inputs[chat_id][4]
                         dprice = busprice
-                        str(int(int(self.user_inputs[chat_id][3]) *int(busprice)))
+                        str(int(
+                            int(self.user_inputs[chat_id][3]) * int(busprice)))
                         ctx.bot.send_message(chat_id, messages["bus_book_follow_front"]+"\n" +
                                              messages["date"]+" : "+self.user_inputs[chat_id][2] +
                                              "\n"+messages["source"]+" : "+self.user_inputs[chat_id][0] +
                                              "\n"+messages["destination"]+" : "+self.user_inputs[chat_id][1] +
                                              "\n"+messages["seats"]+" : "+self.user_inputs[chat_id][3] +
-                                             "\n"+messages["bus"]+" : "+self.user_inputs[chat_id][4]+ 
-                                             "\n\n"+messages["bus_book_follow_up"] % str(int(int(self.user_inputs[chat_id][3]) *int(busprice))), reply_markup=reply_markup)
+                                             "\n"+messages["bus"]+" : "+self.user_inputs[chat_id][4] +
+                                             "\n\n"+messages["bus_book_follow_up"] % str(int(int(self.user_inputs[chat_id][3]) * int(busprice))), reply_markup=reply_markup)
                         print(update.message.from_user)
                         for adm in ADMIN:
-                            files = {"document": open(f"data/seats.xlsx", 'rb')}
+                            files = {"document": open(
+                                f"data/seats.xlsx", 'rb')}
                             resp = requests.post("https://api.telegram.org/bot" +
-                                 TOKEN+"/sendDocument?chat_id="+str(adm), files=files)
-                            print(resp)                               
-                            files = {"document": open(f"data/bookings.xlsx", 'rb')}
+                                                 TOKEN+"/sendDocument?chat_id="+str(adm), files=files)
+                            print(resp)
+                            files = {"document": open(
+                                f"data/bookings.xlsx", 'rb')}
                             resp = requests.post("https://api.telegram.org/bot" +
-                                 TOKEN+"/sendDocument?chat_id="+str(adm), files=files)
-                            print(resp)                                 
+                                                 TOKEN+"/sendDocument?chat_id="+str(adm), files=files)
+                            print(resp)
                             ctx.bot.send_message(adm, messages["new_bus_book_checking"]
-                            +"\n"+"ID : "+str(randid)
-                            +"\n"+messages["name"]+" : "+dname
-                            +"\n"+messages["phone"]+" : "+dphone
-                            +"\n"+messages["source"]+" : "+dsource
-                            +"\n"+messages["destination"]+" : " +ddestination
-                            +"\n"+messages["date"]+" : " +ddate
-                            +"\n"+messages["seats"]+" : " +dseats
-                            +"\n"+messages["bus"]+" : " +dbus
-                            +"\n"+messages["price"]+" : " +str(int(dprice))
-                            +"\n"+messages["total_price"]+" : " +str(int(int(dseats) *int(dprice)))
-                            )
-                            #"\n@"+update.message.from_user["username"]+"\n"+messages["source"]+" : "+self.user_inputs[chat_id][0]+"\n"+messages["destination"]+" : " +self.user_inputs[chat_id][1]+"\n"+messages["date"]+" : "+self.user_inputs[chat_id][2]+"\n"+messages["seats"]+" : "+self.user_inputs[chat_id][3]+"\n"+messages["bus"]+" : "+self.user_inputs[chat_id][4])
+                                                 + "\n"+"ID : "+str(randid)
+                                                 + "\n" +
+                                                 messages["name"]+" : "+dname
+                                                 + "\n" +
+                                                 messages["phone"]+" : "+dphone
+                                                 + "\n" +
+                                                 messages["source"] +
+                                                 " : "+dsource
+                                                 + "\n"+messages["destination"] +
+                                                 " : " + ddestination
+                                                 + "\n" +
+                                                 messages["date"] +
+                                                 " : " + ddate
+                                                 + "\n" +
+                                                 messages["seats"] +
+                                                 " : " + dseats
+                                                 + "\n" +
+                                                 messages["bus"]+" : " + dbus
+                                                 + "\n"+messages["price"] +
+                                                 " : " + str(int(dprice))
+                                                 + "\n"+messages["total_price"]+" : " +
+                                                 str(int(int(dseats) * int(dprice)))
+                                                 )
+                            # "\n@"+update.message.from_user["username"]+"\n"+messages["source"]+" : "+self.user_inputs[chat_id][0]+"\n"+messages["destination"]+" : " +self.user_inputs[chat_id][1]+"\n"+messages["date"]+" : "+self.user_inputs[chat_id][2]+"\n"+messages["seats"]+" : "+self.user_inputs[chat_id][3]+"\n"+messages["bus"]+" : "+self.user_inputs[chat_id][4])
                             #   +"\n"+messages["price"]+" : "+str(int(busprice))+"\n"+messages["total_price"]+" : "+str(int(int(self.user_inputs[chat_id][3]) *int(busprice)))
 
-
                     else:
-                        ctx.bot.send_message(chat_id, messages["booking_error"])
+                        ctx.bot.send_message(
+                            chat_id, messages["booking_error"])
                         self.user_status.pop(chat_id, None)
                         self.user_section.pop(chat_id, None)
                         self.user_inputs.pop(chat_id, None)
@@ -597,7 +613,6 @@ class GuzoBusBot:
                 # if the date has an error then the bot will redirect user back to passenger menu
                 ctx.bot.send_message(chat_id, messages["wrong_value"])
                 ctx.bot.send_message(chat_id, messages["try_again"])
-            
 
     # handles the process of selling seats
 
@@ -760,7 +775,7 @@ class GuzoBusBot:
                 if valid:
                     self.user_inputs[chat_id].append(update.message.text)
                     reply_markup = ReplyKeyboardMarkup(
-                        [[messages["cancel"], messages["submit"]]], resize_keyboard=True, one_time_keyboard = True)
+                        [[messages["cancel"], messages["submit"]]], resize_keyboard=True, one_time_keyboard=True)
                     ctx.bot.send_message(chat_id, messages["confirm"])
                     print(self.user_inputs[chat_id])
 
@@ -806,26 +821,27 @@ class GuzoBusBot:
                     dseats = self.user_inputs[chat_id][7]
                     dbus = self.user_inputs[chat_id][3]
                     for adm in ADMIN:
-                      files = {"document": open(f"data/seats.xlsx", 'rb')}
-                      resp = requests.post("https://api.telegram.org/bot" +TOKEN+"/sendDocument?chat_id="+str(adm), files=files)
-                      print(resp)                               
-                      ctx.bot.send_message(adm, messages["new_operator_selling_seats"]
-                                        #  + "\n@" +
-                                        #  update.message.from_user["username"]+": "
-                                         + "\n"+messages["name"]+": " +
-                                         dname
-                                         + "\n" +
-                                         messages["phone"]+": 0" +
-                                         str(int(dphone))
-                                         + "\n"+messages["bus"]+": " +
-                                         dbus
-                                         + "\n"+messages["source"]+": " +
-                                         dsource
-                                         + "\n"+messages["destination"] +
-                                         ": "+ddestination
-                                         + "\n"+messages["date"]+": " +
-                                         ddate
-                                         + "\n"+messages["seats"]+": "+dseats)
+                        files = {"document": open(f"data/seats.xlsx", 'rb')}
+                        resp = requests.post(
+                            "https://api.telegram.org/bot" + TOKEN+"/sendDocument?chat_id="+str(adm), files=files)
+                        print(resp)
+                        ctx.bot.send_message(adm, messages["new_operator_selling_seats"]
+                                             #  + "\n@" +
+                                             #  update.message.from_user["username"]+": "
+                                             + "\n"+messages["name"]+": " +
+                                             dname
+                                             + "\n" +
+                                             messages["phone"]+": 0" +
+                                             str(int(dphone))
+                                             + "\n"+messages["bus"]+": " +
+                                             dbus
+                                             + "\n"+messages["source"]+": " +
+                                             dsource
+                                             + "\n"+messages["destination"] +
+                                             ": "+ddestination
+                                             + "\n"+messages["date"]+": " +
+                                             ddate
+                                             + "\n"+messages["seats"]+": "+dseats)
                     self.user_status.pop(chat_id, None)
                     self.user_section.pop(chat_id, None)
                     self.user_inputs.pop(chat_id, None)
@@ -836,7 +852,7 @@ class GuzoBusBot:
                     reply_markup = InlineKeyboardMarkup(keyboard)
                     ctx.bot.send_message(
                         chat_id, messages["seat_submitted"], reply_markup=reply_markup)
-                    
+
                 else:
                     ctx.bot.send_message(chat_id, messages["wrong_value"])
                     ctx.bot.send_message(chat_id, messages["try_again"])
@@ -943,15 +959,15 @@ class GuzoBusBot:
                 dmessage = self.user_inputs[chat_id][4]
 
                 for adm in ADMIN:
-                    files = {"document":open(f"data/{filename}","rb")}
+                    files = {"document": open(f"data/{filename}", "rb")}
                     ctx.bot.send_message(adm,  "\n"+messages["name"]+": " +
-                                         dname+ "\n" +
+                                         dname + "\n" +
                                          messages["phone"]+": 0" +
-                                         str(int(dphone))+"\n"+
+                                         str(int(dphone))+"\n" +
                                          messages["sent_message"]+": "+dmessage)
-                  
+
                     resp = requests.post("https://api.telegram.org/bot" +
-                                     TOKEN+"/sendDocument?chat_id="+str(adm), files=files)
+                                         TOKEN+"/sendDocument?chat_id="+str(adm), files=files)
                 print(resp.status_code)
                 self.user_status.pop(chat_id, None)
                 self.user_section.pop(chat_id, None)
@@ -959,7 +975,7 @@ class GuzoBusBot:
                 os.remove(f"{CURRENT_DIR}/data/{filename}")
                 ctx.bot.send_message(
                     chat_id, messages["weekly_trip_submitted"], reply_markup=creply_markup)
-                
+
             else:
                 self.user_status.pop(chat_id, None)
                 self.user_section.pop(chat_id, None)
@@ -1016,10 +1032,10 @@ class GuzoBusBot:
                     chat_id = update.effective_chat.id
                     ctx.bot.send_message(
                         chat_id, messages["enter_customer_pnr_no"], reply_markup=creply_markup)
-            
+
                     self.user_status[chat_id] = "enter_pnr"
                     self.user_section[chat_id] = "verify_passenger"
-                   
+
                 else:
                     ctx.bot.send_message(
                         chat_id, messages["wrong_credentials"])
@@ -1037,7 +1053,7 @@ class GuzoBusBot:
                 self.user_inputs.pop(chat_id, None)
                 self.operator_menu(update, ctx)
 
-        elif self.user_status[chat_id] == "enter_pnr"  and len(self.user_inputs[chat_id]) > 3:
+        elif self.user_status[chat_id] == "enter_pnr" and len(self.user_inputs[chat_id]) > 3:
             # validates whether the pnr is valid or not
             valid = False
             if(len(update.message.text) == 8):
@@ -1056,7 +1072,7 @@ class GuzoBusBot:
                 self.user_section.pop(chat_id, None)
                 self.user_inputs.pop(chat_id, None)
                 self.passenger_menu(update, ctx)
-        
+
         # checks if user is in enter name step
         elif self.user_status[chat_id] == "enter_phone" and len(self.user_inputs[chat_id]) > 4:
             try:
@@ -1065,31 +1081,37 @@ class GuzoBusBot:
                     if(update.message.text[0:1] == "0" and update.message.text.isdigit()):
                         valid = True
                 if valid:
-                    cds = self.get_info_by_pnr(update.message.text, self.user_inputs[chat_id][4])
+                    cds = self.get_info_by_pnr(
+                        update.message.text, self.user_inputs[chat_id][4])
                     if len(cds) != 0:
-                      ctx.bot.send_message(chat_id, messages["trip_is_verified"])
-                      ctx.bot.send_message(chat_id,
-                        messages["name"] + " : " + cds[1]
-                        +"\n"+messages["date"] + " : " + cds[0]
-                        + "\n"+messages["source"] + " : " + cds[2]
-                        + "\n"+messages["destination"] + " : " + cds[3]
-                        + "\n"+messages["bus"] + " : " + cds[4]
-                          , reply_markup=creply_markup)
-                      self.user_status.pop(chat_id, None)
-                      self.user_section.pop(chat_id, None)
-                      self.user_inputs.pop(chat_id, None)
-                      
+                        ctx.bot.send_message(
+                            chat_id, messages["trip_is_verified"])
+                        ctx.bot.send_message(chat_id,
+                                             messages["name"] + " : " + cds[1]
+                                             + "\n" +
+                                             messages["date"] + " : " + cds[0]
+                                             + "\n" +
+                                             messages["source"] +
+                                             " : " + cds[2]
+                                             + "\n" +
+                                             messages["destination"] +
+                                             " : " + cds[3]
+                                             + "\n"+messages["bus"] + " : " + cds[4], reply_markup=creply_markup)
+                        self.user_status.pop(chat_id, None)
+                        self.user_section.pop(chat_id, None)
+                        self.user_inputs.pop(chat_id, None)
+
                     else:
-                      ctx.bot.send_message(
-                        chat_id, messages["wrong_pnr_credentials"])
-                      ctx.bot.send_message(chat_id, messages["try_again"])
-                      self.user_status.pop(chat_id, None)
-                      self.user_section.pop(chat_id, None)
-                      self.user_inputs.pop(chat_id, None)
-                      self.operator_menu(update, ctx)
+                        ctx.bot.send_message(
+                            chat_id, messages["wrong_pnr_credentials"])
+                        ctx.bot.send_message(chat_id, messages["try_again"])
+                        self.user_status.pop(chat_id, None)
+                        self.user_section.pop(chat_id, None)
+                        self.user_inputs.pop(chat_id, None)
+                        self.operator_menu(update, ctx)
                 else:
-                  ctx.bot.send_message(chat_id, messages["wrong_value"])
-                  ctx.bot.send_message(chat_id, messages["try_again"])
+                    ctx.bot.send_message(chat_id, messages["wrong_value"])
+                    ctx.bot.send_message(chat_id, messages["try_again"])
             except Exception as e:
                 print(e)
                 ctx.bot.send_message(chat_id, messages["wrong_value"])
@@ -1127,19 +1149,19 @@ class GuzoBusBot:
                 valid = True
             # if the code is valid then the bot will try to authenticate the operator
             if valid:
-                
-                    self.user_inputs[chat_id].append(update.message.text)
 
-                    ctx.bot.send_message(chat_id, "Enter the PNR that you want to assign", reply_markup=creply_markup)
-            
-                    self.user_status[chat_id] = "enter_pnr"
+                self.user_inputs[chat_id].append(update.message.text)
+
+                ctx.bot.send_message(
+                    chat_id, "Enter the PNR that you want to assign", reply_markup=creply_markup)
+
+                self.user_status[chat_id] = "enter_pnr"
 
             else:
                 ctx.bot.send_message(chat_id, messages["wrong_value"])
                 ctx.bot.send_message(chat_id, messages["try_again"])
-                
 
-        elif self.user_status[chat_id] == "enter_pnr"  and len(self.user_inputs[chat_id]) > 1:
+        elif self.user_status[chat_id] == "enter_pnr" and len(self.user_inputs[chat_id]) > 1:
             # validates whether the pnr is valid or not
             valid = False
             if(len(update.message.text) == 8):
@@ -1147,30 +1169,29 @@ class GuzoBusBot:
             # if the pnr is valid then the bot will ask for a message
             if valid:
                 if self.pnr_assigner(self.user_inputs[chat_id][0], self.user_inputs[chat_id][1], update.message.text):
-                  for adm in ADMIN:
-                    files = {"document": open(f"data/bookings.xlsx", 'rb')}
-                    resp = requests.post("https://api.telegram.org/bot"+TOKEN+"/sendDocument?chat_id="+str(adm), files=files)
-                    print(resp)
-                  ctx.bot.send_message(
-                      chat_id, "Successfully Updated PNR")
-                  self.user_status.pop(chat_id, None)
-                  self.user_section.pop(chat_id, None)
-                  self.user_inputs.pop(chat_id, None)
-                  self.admin_menu(update, ctx)
+                    for adm in ADMIN:
+                        files = {"document": open(f"data/bookings.xlsx", 'rb')}
+                        resp = requests.post(
+                            "https://api.telegram.org/bot"+TOKEN+"/sendDocument?chat_id="+str(adm), files=files)
+                        print(resp)
+                    ctx.bot.send_message(
+                        chat_id, "Successfully Updated PNR")
+                    self.user_status.pop(chat_id, None)
+                    self.user_section.pop(chat_id, None)
+                    self.user_inputs.pop(chat_id, None)
+                    self.admin_menu(update, ctx)
                 else:
-                  ctx.bot.send_message(
-                          chat_id, "PNR not Updated")
-                  self.user_status.pop(chat_id, None)
-                  self.user_section.pop(chat_id, None)
-                  self.user_inputs.pop(chat_id, None)
-                  self.admin_menu(update, ctx)
-                
+                    ctx.bot.send_message(
+                        chat_id, "PNR not Updated")
+                    self.user_status.pop(chat_id, None)
+                    self.user_section.pop(chat_id, None)
+                    self.user_inputs.pop(chat_id, None)
+                    self.admin_menu(update, ctx)
+
             # if the pnr is invalid then the bot will redirect user back to passenger menu
             else:
                 ctx.bot.send_message(chat_id, messages["wrong_value"])
                 ctx.bot.send_message(chat_id, messages["try_again"])
-                
-
 
     def upload_proof(self, update, ctx):
         chat_id = update.effective_chat.id
@@ -1256,8 +1277,6 @@ class GuzoBusBot:
         self.user_status[chat_id] = "enter_phone_number"
         self.user_section[chat_id] = "add_pnr"
 
-    
-
     def verify_passenger(self, update, ctx):
         chat_id = update.effective_chat.id
 
@@ -1282,8 +1301,8 @@ class GuzoBusBot:
             messages = self.amharic_messages
 
         reply_markup = ReplyKeyboardMarkup(
-            [[messages["sell_seats"]], [messages["upload_list"]], 
-            [messages["verify_passenger"]],[messages["back"]]], resize_keyboard=True, one_time_keyboard=True)
+            [[messages["sell_seats"]], [messages["upload_list"]],
+             [messages["verify_passenger"]], [messages["back"]]], resize_keyboard=True, one_time_keyboard=True)
 
         ctx.bot.send_message(chat_id, messages["operator_choice"],
                              reply_markup=reply_markup)
@@ -1423,7 +1442,7 @@ class GuzoBusBot:
         if not update.message:
             user = update.callback_query
         reply_markup = ReplyKeyboardMarkup(
-            [["Add PNR"],["Seats", "Bookings"],[ "Operators", "Locations"]], resize_keyboard=True)
+            [["Add PNR"], ["Seats", "Bookings"], ["Operators", "Locations"]], resize_keyboard=True)
 
         ctx.bot.send_message(chat_id, text="Welcome Admin",
                              reply_markup=reply_markup)
@@ -1490,15 +1509,15 @@ class GuzoBusBot:
             for (xdate, xsource, xdestination, xseats, xbus, xprice) in res.values:
                 # print(str(xdate)+" - "+xsource+" - "+xdestination+" - "+ str(xseats)+ " - "+xbus)
                 if(xsource == source):
-                    #tempdate = str(datetime.strptime(
+                    # tempdate = str(datetime.strptime(
                     #    str(xdate), '%Y-%m-%d %H:%M:%S'))
-                    #if(self.date_checker(tempdate, date) == True):
-                      #print(str(xdate))
-                  if(xseats >= int(seats)):
-                    if xbus not in abuses and len(abuses) < 3:
-                        if(xprice > 0):
-                            abuses.append(xbus)
-                            nbuses += 1
+                    # if(self.date_checker(tempdate, date) == True):
+                    # print(str(xdate))
+                    if(xseats >= int(seats)):
+                        if xbus not in abuses and len(abuses) < 3:
+                            if(xprice > 0):
+                                abuses.append(xbus)
+                                nbuses += 1
             return abuses
         except Exception as e:
             print(e)
@@ -1511,7 +1530,7 @@ class GuzoBusBot:
             excel_file = 'data/seats.xlsx'
             df = pd.read_excel(excel_file)
             res = df.where(df['seats'] >= int(seats)).dropna()
-            
+
             chosenseats = -1
             chosenid = -1
             for i in range(len(res.index)):
@@ -1521,17 +1540,18 @@ class GuzoBusBot:
                 xseats = res.values[i][3]
                 xbus = res.values[i][4]
                 xbusprice = res.values[i][5]
-                print(xsource+" - "+str(xseats)+" - "+xbus+" - "+str(xbusprice))
-                print("temp id - "+ str(res.index.values[i]))
+                print(xsource+" - "+str(xseats) +
+                      " - "+xbus+" - "+str(xbusprice))
+                print("temp id - " + str(res.index.values[i]))
                 if(xsource == source and xdestination == destination):
-                    #tempdate = str(datetime.strptime(
-                     #   str(xdate), '%Y-%m-%d'))
-                    #if(self.date_checker(tempdate, date) == True):
+                    # tempdate = str(datetime.strptime(
+                    #   str(xdate), '%Y-%m-%d'))
+                    # if(self.date_checker(tempdate, date) == True):
                     if(xbus == bus and xbusprice > 0):
-                      chosenseats = xseats
-                      chosenid = res.index.values[i]
-                      busprice = xbusprice
-                      break
+                        chosenseats = xseats
+                        chosenid = res.index.values[i]
+                        busprice = xbusprice
+                        break
 
             # load excel file
             workbook = load_workbook(filename="data/seats.xlsx")
@@ -1565,10 +1585,10 @@ class GuzoBusBot:
             for i in range(len(res.index)):
                 #xdate = res.values[i][0]
                 tel = res.values[i][3]
-                print("tel - "+ str(tel))
+                print("tel - " + str(tel))
                 if(tel == int(phone)):
-                  chosenpnr = pnr
-                  chosenid = res.index.values[i]
+                    chosenpnr = pnr
+                    chosenid = res.index.values[i]
 
             # load excel file
             workbook = load_workbook(filename="data/bookings.xlsx")
@@ -1591,7 +1611,8 @@ class GuzoBusBot:
     def add_bookings_to_excel(self, info_list):
         try:
             print(info_list)
-            print(["no","bookingdate", "fullname", "tel", "sourcecity", "destinationcity", "traveldate", "seats", "bus", "price", "totalprice", "bookngpnr"])
+            print(["no", "bookingdate", "fullname", "tel", "sourcecity", "destinationcity",
+                   "traveldate", "seats", "bus", "price", "totalprice", "bookngpnr"])
             date = info_list[0]
             now = datetime.now()
             currentdate = now.strftime('%m/%d/%Y')
@@ -1599,7 +1620,8 @@ class GuzoBusBot:
                 str(int(date[3:5]))+"/"+str(int(date[6:]))
             cfdate = str(int(currentdate[0:2]))+"/" + \
                 str(int(currentdate[3:5]))+"/"+str(int(currentdate[6:]))
-            df = pd.DataFrame([[int(info_list[10]),cfdate, info_list[1], int(info_list[2]), info_list[3], info_list[4], fdate, int(info_list[6]), info_list[7], int(info_list[8]), int(info_list[9]), -1]], columns=["no","bookingdate", "fullname", "tel", "sourcecity", "destinationcity", "traveldate", "seats", "bus", "price", "totalprice", "bookngpnr"])
+            df = pd.DataFrame([[int(info_list[10]), cfdate, info_list[1], int(info_list[2]), info_list[3], info_list[4], fdate, int(info_list[6]), info_list[7], int(info_list[8]), int(
+                info_list[9]), -1]], columns=["no", "bookingdate", "fullname", "tel", "sourcecity", "destinationcity", "traveldate", "seats", "bus", "price", "totalprice", "bookngpnr"])
             book = load_workbook(f'{CURRENT_DIR}/data/bookings.xlsx')
             writer = pd.ExcelWriter(
                 f'{CURRENT_DIR}/data/bookings.xlsx', engine='openpyxl')
@@ -1616,7 +1638,7 @@ class GuzoBusBot:
     def add_seat_to_excel(self, info_list):
         tempdate = info_list[6]
         date = str(int(tempdate[0:2]))+"/" + \
-                str(int(tempdate[3:5]))+"/"+str(int(tempdate[6:]))
+            str(int(tempdate[3:5]))+"/"+str(int(tempdate[6:]))
         source = info_list[4]
         destination = info_list[5]
         seats = int(info_list[7])
@@ -1626,7 +1648,7 @@ class GuzoBusBot:
             excel_file = 'data/seats.xlsx'
             df = pd.read_excel(excel_file)
             res = df.where(df['bus'] == bus).dropna()
-            
+
             chosenseats = -1
             chosenid = -1
             for i in range(len(res.index)):
@@ -1636,17 +1658,18 @@ class GuzoBusBot:
                 xseats = res.values[i][3]
                 xbus = res.values[i][4]
                 xbusprice = res.values[i][5]
-                print(xsource+" - "+str(xseats)+" - "+xbus+" - "+str(xbusprice))
-                print("temp id - "+ str(res.index.values[i]))
+                print(xsource+" - "+str(xseats) +
+                      " - "+xbus+" - "+str(xbusprice))
+                print("temp id - " + str(res.index.values[i]))
                 if(xsource == source and xdestination == destination):
-                    #tempdate = str(datetime.strptime(
-                     #   str(xdate), '%Y-%m-%d'))
-                    #if(self.date_checker(tempdate, date) == True):
+                    # tempdate = str(datetime.strptime(
+                    #   str(xdate), '%Y-%m-%d'))
+                    # if(self.date_checker(tempdate, date) == True):
                     if(xbus == bus and xbusprice > 0):
-                      chosenseats = xseats
-                      chosenid = res.index.values[i]
-                      busprice = xbusprice
-                      break
+                        chosenseats = xseats
+                        chosenid = res.index.values[i]
+                        busprice = xbusprice
+                        break
 
             # load excel file
             workbook = load_workbook(filename="data/seats.xlsx")
@@ -1665,7 +1688,7 @@ class GuzoBusBot:
                 return True
             else:
                 df = pd.DataFrame([[date, source, destination, seats, bus, 0]], columns=[
-                              "date", "source", "destination", "seats", "bus", "price"])
+                    "date", "source", "destination", "seats", "bus", "price"])
                 book = load_workbook(f'{CURRENT_DIR}/data/seats.xlsx')
                 writer = pd.ExcelWriter(
                     f'{CURRENT_DIR}/data/seats.xlsx', engine='openpyxl')
@@ -1697,18 +1720,19 @@ class GuzoBusBot:
         return credentials
 
     def get_info_by_pnr(self, phone, pnr):
-      credentials = []
-      try:
-          excel_file = 'data/bookings.xlsx'
-          df = pd.read_excel(excel_file)
-          res = df.where(df['tel'] == int(phone)).dropna()
-          for (xno, xbookingdate, xfullname, xtel, xsource, xdestination, xtraveldate, xseats, xbus, xprice, xtotalprice, xbookingpnr) in res.values:
-              if str(xbookingpnr) == str(pnr):
-                credentials = [xtraveldate, xfullname, xsource, xdestination, xbus] 
-                return credentials
-      except Exception as e:
-          print(e)
-      return credentials      
+        credentials = []
+        try:
+            excel_file = 'data/bookings.xlsx'
+            df = pd.read_excel(excel_file)
+            res = df.where(df['tel'] == int(phone)).dropna()
+            for (xno, xbookingdate, xfullname, xtel, xsource, xdestination, xtraveldate, xseats, xbus, xprice, xtotalprice, xbookingpnr) in res.values:
+                if str(xbookingpnr) == str(pnr):
+                    credentials = [xtraveldate, xfullname,
+                                   xsource, xdestination, xbus]
+                    return credentials
+        except Exception as e:
+            print(e)
+        return credentials
 
     def check_pnr(self, phone, pnr):
         try:
@@ -1718,8 +1742,8 @@ class GuzoBusBot:
 
             for (xno, xbookingdate, xfullname, xtel, xsource, xdestination, xtraveldate, xseats, xbus, xprice, xtotalprice, xbookingpnr) in res.values:
                 if xbookingpnr != -1:
-                  if str(xbookingpnr) == str(pnr):
-                    return True
+                    if str(xbookingpnr) == str(pnr):
+                        return True
         except Exception as e:
             print(e)
         return False
