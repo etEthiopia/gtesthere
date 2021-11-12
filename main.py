@@ -184,10 +184,10 @@ class GuzoBusBot:
             messages = self.english_messages
         else:
             messages = self.amharic_messages
-        if update.message.text == "English ðﾟﾇﾬðﾟﾇﾧ":
+        if update.message.text == "English 🇬🇧":
             self.load_data(False, True, chat_id)
             self.main_menu(update, ctx)
-        elif update.message.text == "አማርኛ ðﾟﾇﾪðﾟﾇﾹ":
+        elif update.message.text == "አማርኛ 🇪🇹":
             self.load_data(True, True, chat_id)
             self.main_menu(update, ctx)
         elif chat_id in ADMIN and update.message.text.lower() == "admin":
@@ -1418,7 +1418,7 @@ class GuzoBusBot:
             messages = self.amharic_messages
 
         reply_markup = ReplyKeyboardMarkup(
-            [["English ðﾟﾇﾬðﾟﾇﾧ", "አማርኛ ðﾟﾇﾪðﾟﾇﾹ"]], resize_keyboard=True)
+            [["English 🇬🇧", "አማርኛ 🇪🇹"]], resize_keyboard=True)
 
         # ctx.bot.send_message(chat_id, text = "Welcome to Guzo Bot, እንኳን ወደ ጉዞ ቦት መጣችሁ\nChoose Language to Proceed. ለመቀጠል ቋንቋ ይምረጡ።")
         self.user_status.pop(chat_id, None)
@@ -1429,7 +1429,7 @@ class GuzoBusBot:
                              TOKEN+"/sendPhoto?chat_id="+str(chat_id), files=files)
         print(resp.status_code)
         update.message.reply_text(
-            "ðﾟﾚﾌ  Welcome to Guzo Bus Ethiopia Bot\nእንኳን ወደ ጉዞ ባስ ኢትዮጵያ ቦት በሰላም መጡ\n\nðﾟﾒﾺChoose Language to Proceed\nለመቀጠል ቋንቋ ይምረጡ:-", reply_markup=reply_markup)
+            "🚌  Welcome to Guzo Bus Ethiopia Bot\nእንኳን ወደ ጉዞ ባስ ኢትዮጵያ ቦት በሰላም መጡ\n\n💺Choose Language to Proceed\nለመቀጠል ቋንቋ ይምረጡ:-", reply_markup=reply_markup)
 
         #reply_markup = InlineKeyboardMarkup(keyboard)
 
