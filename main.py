@@ -1,4 +1,4 @@
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, ReplyKeyboardMarkup
+﻿from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, CallbackContext
 from boto.s3.connection import S3Connection
 import telegram
@@ -18,9 +18,9 @@ from random import randint, randrange
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 #s3 = S3Connection(os.environ['TOKEN'], os.environ['ADMIN'])
 
-TOKEN = "2047797679:AAFGiiTdL4MBJr3uiwBP9LQO1yuh09xbCYQ"
-
-ADMIN = [565110335, 344049097]
+TOKEN = "2047797679:AAF0eCHeyvp8s7rBRkGReix9tM_nLfcNzj4"
+ADMIN = [344049097]
+#ADMIN = [565110335, 344049097, 1799128648, 2052373171]
 # try:
 #     ADMIN = 565110335
 # except Exception as e:
@@ -184,10 +184,10 @@ class GuzoBusBot:
             messages = self.english_messages
         else:
             messages = self.amharic_messages
-        if update.message.text == "English 🇬🇧":
+        if update.message.text == "English ðﾟﾇﾬðﾟﾇﾧ":
             self.load_data(False, True, chat_id)
             self.main_menu(update, ctx)
-        elif update.message.text == "አማርኛ 🇪🇹":
+        elif update.message.text == "አማርኛ ðﾟﾇﾪðﾟﾇﾹ":
             self.load_data(True, True, chat_id)
             self.main_menu(update, ctx)
         elif chat_id in ADMIN and update.message.text.lower() == "admin":
@@ -611,6 +611,7 @@ class GuzoBusBot:
             except Exception as e:
                 print(e)
                 # if the date has an error then the bot will redirect user back to passenger menu
+                #ctx.bot.send_message(chat_id, messages["wrong_value"])
                 ctx.bot.send_message(chat_id, messages["wrong_value"])
                 ctx.bot.send_message(chat_id, messages["try_again"])
 
@@ -1417,7 +1418,7 @@ class GuzoBusBot:
             messages = self.amharic_messages
 
         reply_markup = ReplyKeyboardMarkup(
-            [["English 🇬🇧", "አማርኛ 🇪🇹"]], resize_keyboard=True)
+            [["English ðﾟﾇﾬðﾟﾇﾧ", "አማርኛ ðﾟﾇﾪðﾟﾇﾹ"]], resize_keyboard=True)
 
         # ctx.bot.send_message(chat_id, text = "Welcome to Guzo Bot, እንኳን ወደ ጉዞ ቦት መጣችሁ\nChoose Language to Proceed. ለመቀጠል ቋንቋ ይምረጡ።")
         self.user_status.pop(chat_id, None)
@@ -1428,7 +1429,7 @@ class GuzoBusBot:
                              TOKEN+"/sendPhoto?chat_id="+str(chat_id), files=files)
         print(resp.status_code)
         update.message.reply_text(
-            "🚌  Welcome to Guzo Bus Ethiopia Bot\nእንኳን ወደ ጉዞ ባስ ኢትዮጵያ ቦት በሰላም መጡ\n\n💺Choose Language to Proceed\nለመቀጠል ቋንቋ ይምረጡ:-", reply_markup=reply_markup)
+            "ðﾟﾚﾌ  Welcome to Guzo Bus Ethiopia Bot\nእንኳን ወደ ጉዞ ባስ ኢትዮጵያ ቦት በሰላም መጡ\n\nðﾟﾒﾺChoose Language to Proceed\nለመቀጠል ቋንቋ ይምረጡ:-", reply_markup=reply_markup)
 
         #reply_markup = InlineKeyboardMarkup(keyboard)
 
