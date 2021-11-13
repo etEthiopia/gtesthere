@@ -83,6 +83,6 @@
     "verify_passenger_details": "By using the link provided below, you can check whether a passenger has paid for a trip by entering: \nThe Passenger's phone number\nBooking PNR number",
     "verify_passenger_link": "http://guzobus.et/website/ticketdownload",
     "wrong_pnr_credentials": "There is no valid Reservation on the entered PNR and phone number.",
-    "trip_is_verified": "The trip has been verified and paied for."
+    "trip_is_verified": "The trip has been verified and paid for."
     }
     
