@@ -19,9 +19,9 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 #s3 = S3Connection(os.environ['TOKEN'], os.environ['ADMIN'])
 
 TOKEN = "2047797679:AAF0eCHeyvp8s7rBRkGReix9tM_nLfcNzj4"
+#dagit test 2
+#565110335
 ADMIN = [344049097, 2052373171, 565110335, 1799128648]
-
-
 # try:
 #     ADMIN = 565110335
 # except Exception as e:
@@ -136,6 +136,20 @@ class GuzoBusBot:
                     "data/locations.txt")
                 ctx.bot.send_message(
                     chat_id, "Locations Successfully Updated")
+            elif(chat_id in ADMIN and update.message.document.file_name == "en.json"):
+                ctx.bot.getFile(update.message.document).download(
+                    "data/langs/en.json")
+                ctx.bot.send_message(
+                    chat_id, "English Successfully Updated")
+                self.english_messages = self.load_data()
+                self.amharic_messages = self.load_data(False)
+            elif(chat_id in ADMIN and update.message.document.file_name == "am.json"):
+                ctx.bot.getFile(update.message.document).download(
+                    "data/langs/am.json")
+                ctx.bot.send_message(
+                    chat_id, "Amharic Successfully Updated")
+                self.english_messages = self.load_data()
+                self.amharic_messages = self.load_data(False)
 
             if self.messages[chat_id] == "en":
                 messages = self.english_messages
@@ -212,6 +226,21 @@ class GuzoBusBot:
             print(resp.status_code)
         elif chat_id in ADMIN and update.message.text.lower() == "operators":
             files = {"document": open(f"data/operators.xlsx", 'rb')}
+            resp = requests.post("https://api.telegram.org/bot" +
+                                 TOKEN+"/sendDocument?chat_id="+str(chat_id), files=files)
+            print(resp.status_code)
+        elif chat_id in ADMIN and update.message.text.lower() == "operators":
+            files = {"document": open(f"data/operators.xlsx", 'rb')}
+            resp = requests.post("https://api.telegram.org/bot" +
+                                 TOKEN+"/sendDocument?chat_id="+str(chat_id), files=files)
+            print(resp.status_code)
+        elif chat_id in ADMIN and update.message.text.lower() == "english":
+            files = {"document": open(f"data/langs/en.json", 'rb')}
+            resp = requests.post("https://api.telegram.org/bot" +
+                                 TOKEN+"/sendDocument?chat_id="+str(chat_id), files=files)
+            print(resp.status_code)
+        elif chat_id in ADMIN and update.message.text.lower() == "amharic":
+            files = {"document": open(f"data/langs/am.json", 'rb')}
             resp = requests.post("https://api.telegram.org/bot" +
                                  TOKEN+"/sendDocument?chat_id="+str(chat_id), files=files)
             print(resp.status_code)
@@ -1512,7 +1541,7 @@ class GuzoBusBot:
         if not update.message:
             user = update.callback_query
         reply_markup = ReplyKeyboardMarkup(
-            [["Add PNR"], ["Seats", "Bookings"], ["Operators", "Locations"]], resize_keyboard=True)
+            [["Add PNR"], ["Seats", "Bookings"], ["Operators", "Locations"],["English", "Amharic"]], resize_keyboard=True)
 
         ctx.bot.send_message(chat_id, text="Welcome Admin",
                              reply_markup=reply_markup)
