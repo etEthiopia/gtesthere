@@ -18,7 +18,7 @@ from random import randint, randrange
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 #s3 = S3Connection(os.environ['TOKEN'], os.environ['ADMIN'])
 
-TOKEN = "2078559760:AAGm1wKBe6DpJNGkS1wueFI0aZaDx5qaiOo"
+TOKEN = "2047797679:AAF0eCHeyvp8s7rBRkGReix9tM_nLfcNzj4"
 ADMIN = [344049097, 2052373171, 565110335, 1799128648]
 
 
