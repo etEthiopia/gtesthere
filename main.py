@@ -13,10 +13,10 @@ import pandas as pd
 from datetime import datetime
 from openpyxl import load_workbook
 from random import randint, randrange
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
 
-load_dotenv()
+#load_dotenv()
 
 #token = os.environ.get("TOKEN")
 
@@ -24,7 +24,7 @@ load_dotenv()
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 #s3 = S3Connection(os.environ['TOKEN'], os.environ['ADMIN'])
 
-TOKEN = os.environ.get("TOKEN")
+TOKEN = os.getenv("TOKEN")
 # dagit test 2
 # 565110335
 ADMIN = [344049097, 2052373171, 565110335, 1799128648]
