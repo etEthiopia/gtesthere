@@ -13,14 +13,20 @@ import pandas as pd
 from datetime import datetime
 from openpyxl import load_workbook
 from random import randint, randrange
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+#token = os.environ.get("TOKEN")
 
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 #s3 = S3Connection(os.environ['TOKEN'], os.environ['ADMIN'])
 
-TOKEN = "2047797679:AAF0eCHeyvp8s7rBRkGReix9tM_nLfcNzj4"
-#dagit test 2
-#565110335
+TOKEN = os.environ.get("TOKEN")
+# dagit test 2
+# 565110335
 ADMIN = [344049097, 2052373171, 565110335, 1799128648]
 # try:
 #     ADMIN = 565110335
@@ -344,53 +350,52 @@ class GuzoBusBot:
 
         # checks if user is in select message step
         elif self.user_status[chat_id] == "booking_confirmation" and len(self.user_inputs[chat_id]) > 1:
-          try:
-            # validates whether the confirmation is submitted or not
-            if(update.message.text == messages["submit"]):
-                # if the user submits the confirmation then the system will send the data to the admin and delete the picture
-                filename = self.user_inputs[chat_id][2].file_path.split(
-                    "/")[-1]
-                self.user_inputs[chat_id][2].download("data/"+filename)
-                print(self.user_inputs[chat_id])
-                dphone = self.user_inputs[chat_id][1]
-                dpnr = self.user_inputs[chat_id][0]
-                ctx.bot.send_message(
-                    chat_id, messages["payment_proof_submitted"], reply_markup=creply_markup)
-                for adm in ADMIN:
-                    files = {"photo": open(f"data/{filename}", 'rb')}
-                    ctx.bot.send_message(adm, messages["new_payment_proof"] +
-                                         #   +"\n@"+update.message.from_user["username"]
-                                         "\n"+messages["phone"] + \
-                                         ": 0"+str(int(dphone))
-                                         + "\nPNR: "+dpnr+"\n")
-                    resp = requests.post(
-                        "https://api.telegram.org/bot"+TOKEN+"/sendPhoto?chat_id="+str(adm), files=files)
-                    print(resp)
-                self.user_status.pop(chat_id, None)
-                self.user_section.pop(chat_id, None)
-                self.user_inputs.pop(chat_id, None)
+            try:
+                # validates whether the confirmation is submitted or not
+                if(update.message.text == messages["submit"]):
+                    # if the user submits the confirmation then the system will send the data to the admin and delete the picture
+                    filename = self.user_inputs[chat_id][2].file_path.split(
+                        "/")[-1]
+                    self.user_inputs[chat_id][2].download("data/"+filename)
+                    print(self.user_inputs[chat_id])
+                    dphone = self.user_inputs[chat_id][1]
+                    dpnr = self.user_inputs[chat_id][0]
+                    ctx.bot.send_message(
+                        chat_id, messages["payment_proof_submitted"], reply_markup=creply_markup)
+                    for adm in ADMIN:
+                        files = {"photo": open(f"data/{filename}", 'rb')}
+                        ctx.bot.send_message(adm, messages["new_payment_proof"] +
+                                             #   +"\n@"+update.message.from_user["username"]
+                                             "\n"+messages["phone"] + \
+                                             ": 0"+str(int(dphone))
+                                             + "\nPNR: "+dpnr+"\n")
+                        resp = requests.post(
+                            "https://api.telegram.org/bot"+TOKEN+"/sendPhoto?chat_id="+str(adm), files=files)
+                        print(resp)
+                    self.user_status.pop(chat_id, None)
+                    self.user_section.pop(chat_id, None)
+                    self.user_inputs.pop(chat_id, None)
 
-                
-                os.remove(f"{CURRENT_DIR}/data/{filename}")
+                    os.remove(f"{CURRENT_DIR}/data/{filename}")
 
-            else:
-                self.user_status.pop(chat_id, None)
-                self.user_section.pop(chat_id, None)
-                self.user_inputs.pop(chat_id, None)
-                self.passenger_menu(update, ctx)
-            valid = False
-          except Exception as e:
+                else:
+                    self.user_status.pop(chat_id, None)
+                    self.user_section.pop(chat_id, None)
+                    self.user_inputs.pop(chat_id, None)
+                    self.passenger_menu(update, ctx)
+                valid = False
+            except Exception as e:
                 print("exception")
                 if str(e) == "Chat not found":
-                  print("Chat not fouond")
+                    print("Chat not fouond")
                 elif str(e) == "Forbidden: bot was blocked by the user":
-                  print("Bot Blocked by user")
+                    print("Bot Blocked by user")
                 else:
-                  print(e)
-                  # if the date has an error then the bot will redirect user back to passenger menu
-                  #ctx.bot.send_message(chat_id, messages["wrong_value"])
-                  ctx.bot.send_message(chat_id, messages["wrong_value"])
-                  ctx.bot.send_message(chat_id, messages["try_again"])
+                    print(e)
+                    # if the date has an error then the bot will redirect user back to passenger menu
+                    #ctx.bot.send_message(chat_id, messages["wrong_value"])
+                    ctx.bot.send_message(chat_id, messages["wrong_value"])
+                    ctx.bot.send_message(chat_id, messages["try_again"])
         elif self.user_status[chat_id] == "upload_proof_image":
             # if the user sends message instead of image, the system will ask again
             ctx.bot.send_message(
@@ -599,8 +604,7 @@ class GuzoBusBot:
                                              "\n"+messages["seats"]+" : "+self.user_inputs[chat_id][3] +
                                              "\n"+messages["bus"]+" : "+self.user_inputs[chat_id][4] +
                                              "\n\n"+messages["bus_book_follow_up"] % str(int(int(self.user_inputs[chat_id][3]) * int(busprice))), reply_markup=reply_markup)
-                        
-                        
+
                         for adm in ADMIN:
                             ctx.bot.send_message(adm, messages["new_bus_book_checking"]
                                                  + "\n"+"ID : "+str(randid)
@@ -640,7 +644,7 @@ class GuzoBusBot:
                             print(str(adm))
                             print("bookings")
                             print(resp)
-                            
+
                             # "\n@"+update.message.from_user["username"]+"\n"+messages["source"]+" : "+self.user_inputs[chat_id][0]+"\n"+messages["destination"]+" : " +self.user_inputs[chat_id][1]+"\n"+messages["date"]+" : "+self.user_inputs[chat_id][2]+"\n"+messages["seats"]+" : "+self.user_inputs[chat_id][3]+"\n"+messages["bus"]+" : "+self.user_inputs[chat_id][4])
                             #   +"\n"+messages["price"]+" : "+str(int(busprice))+"\n"+messages["total_price"]+" : "+str(int(int(self.user_inputs[chat_id][3]) *int(busprice)))
 
@@ -662,15 +666,15 @@ class GuzoBusBot:
             except Exception as e:
                 print("exception")
                 if str(e) == "Chat not found":
-                  print("Chat not fouond")
+                    print("Chat not fouond")
                 elif str(e) == "Forbidden: bot was blocked by the user":
-                  print("Bot Blocked by user")
+                    print("Bot Blocked by user")
                 else:
-                  print(e)
-                  # if the date has an error then the bot will redirect user back to passenger menu
-                  #ctx.bot.send_message(chat_id, messages["wrong_value"])
-                  ctx.bot.send_message(chat_id, messages["wrong_value"])
-                  ctx.bot.send_message(chat_id, messages["try_again"])
+                    print(e)
+                    # if the date has an error then the bot will redirect user back to passenger menu
+                    #ctx.bot.send_message(chat_id, messages["wrong_value"])
+                    ctx.bot.send_message(chat_id, messages["wrong_value"])
+                    ctx.bot.send_message(chat_id, messages["try_again"])
 
     # handles the process of selling seats
 
@@ -868,75 +872,75 @@ class GuzoBusBot:
 
         # checks if user is in confirmation
         elif self.user_status[chat_id] == "selling_confirmation" and len(self.user_inputs[chat_id]) > 7:
-          try:
-            # validates whether the confirmation is submitted or not
-            if(update.message.text == messages["submit"]):
-                if(self.add_seat_to_excel(self.user_inputs[chat_id])):
-                    keyboard = [
-                        [InlineKeyboardButton(
-                            messages["back_to_main"], callback_data="back_main")]
-                    ]
-                    reply_markup = InlineKeyboardMarkup(keyboard)
-                    ctx.bot.send_message(
-                        chat_id, messages["seat_submitted"], reply_markup=reply_markup)
-                    dname = self.user_inputs[chat_id][0]
-                    dphone = self.user_inputs[chat_id][1]
-                    ddate = self.user_inputs[chat_id][6]
-                    dsource = self.user_inputs[chat_id][4]
-                    ddestination = self.user_inputs[chat_id][5]
-                    dseats = self.user_inputs[chat_id][7]
-                    dbus = self.user_inputs[chat_id][3]
-                    for adm in ADMIN:
-                        files = {"document": open(f"data/seats.xlsx", 'rb')}
-                        resp = requests.post(
-                            "https://api.telegram.org/bot" + TOKEN+"/sendDocument?chat_id="+str(adm), files=files)
-                        print(resp)
-                        ctx.bot.send_message(adm, messages["new_operator_selling_seats"]
-                                             #  + "\n@" +
-                                             #  update.message.from_user["username"]+": "
-                                             + "\n"+messages["name"]+": " +
-                                             dname
-                                             + "\n" +
-                                             messages["phone"]+": 0" +
-                                             str(int(dphone))
-                                             + "\n"+messages["bus"]+": " +
-                                             dbus
-                                             + "\n"+messages["source"]+": " +
-                                             dsource
-                                             + "\n"+messages["destination"] +
-                                             ": "+ddestination
-                                             + "\n"+messages["date"]+": " +
-                                             ddate
-                                             + "\n"+messages["seats"]+": "+dseats)
-                    self.user_status.pop(chat_id, None)
-                    self.user_section.pop(chat_id, None)
-                    self.user_inputs.pop(chat_id, None)
-                    
+            try:
+                # validates whether the confirmation is submitted or not
+                if(update.message.text == messages["submit"]):
+                    if(self.add_seat_to_excel(self.user_inputs[chat_id])):
+                        keyboard = [
+                            [InlineKeyboardButton(
+                                messages["back_to_main"], callback_data="back_main")]
+                        ]
+                        reply_markup = InlineKeyboardMarkup(keyboard)
+                        ctx.bot.send_message(
+                            chat_id, messages["seat_submitted"], reply_markup=reply_markup)
+                        dname = self.user_inputs[chat_id][0]
+                        dphone = self.user_inputs[chat_id][1]
+                        ddate = self.user_inputs[chat_id][6]
+                        dsource = self.user_inputs[chat_id][4]
+                        ddestination = self.user_inputs[chat_id][5]
+                        dseats = self.user_inputs[chat_id][7]
+                        dbus = self.user_inputs[chat_id][3]
+                        for adm in ADMIN:
+                            files = {"document": open(
+                                f"data/seats.xlsx", 'rb')}
+                            resp = requests.post(
+                                "https://api.telegram.org/bot" + TOKEN+"/sendDocument?chat_id="+str(adm), files=files)
+                            print(resp)
+                            ctx.bot.send_message(adm, messages["new_operator_selling_seats"]
+                                                 #  + "\n@" +
+                                                 #  update.message.from_user["username"]+": "
+                                                 + "\n"+messages["name"]+": " +
+                                                 dname
+                                                 + "\n" +
+                                                 messages["phone"]+": 0" +
+                                                 str(int(dphone))
+                                                 + "\n"+messages["bus"]+": " +
+                                                 dbus
+                                                 + "\n"+messages["source"]+": " +
+                                                 dsource
+                                                 + "\n"+messages["destination"] +
+                                                 ": "+ddestination
+                                                 + "\n"+messages["date"]+": " +
+                                                 ddate
+                                                 + "\n"+messages["seats"]+": "+dseats)
+                        self.user_status.pop(chat_id, None)
+                        self.user_section.pop(chat_id, None)
+                        self.user_inputs.pop(chat_id, None)
 
+                    else:
+                        ctx.bot.send_message(chat_id, messages["wrong_value"])
+                        ctx.bot.send_message(chat_id, messages["try_again"])
+                        self.user_status.pop(chat_id, None)
+                        self.user_section.pop(chat_id, None)
+                        self.user_inputs.pop(chat_id, None)
+                        self.operator_menu(update, ctx)
                 else:
-                    ctx.bot.send_message(chat_id, messages["wrong_value"])
-                    ctx.bot.send_message(chat_id, messages["try_again"])
                     self.user_status.pop(chat_id, None)
                     self.user_section.pop(chat_id, None)
                     self.user_inputs.pop(chat_id, None)
                     self.operator_menu(update, ctx)
-            else:
-                self.user_status.pop(chat_id, None)
-                self.user_section.pop(chat_id, None)
-                self.user_inputs.pop(chat_id, None)
-                self.operator_menu(update, ctx)
-          except Exception as e:
+            except Exception as e:
                 print("exception")
                 if str(e) == "Chat not found":
-                  print("Chat not fouond")
+                    print("Chat not fouond")
                 elif str(e) == "Forbidden: bot was blocked by the user":
-                  print("Bot Blocked by user")
+                    print("Bot Blocked by user")
                 else:
-                  print(e)
-                  # if the date has an error then the bot will redirect user back to passenger menu
-                  #ctx.bot.send_message(chat_id, messages["wrong_value"])
-                  ctx.bot.send_message(chat_id, messages["wrong_value"])
-                  ctx.bot.send_message(chat_id, messages["try_again"]) 
+                    print(e)
+                    # if the date has an error then the bot will redirect user back to passenger menu
+                    #ctx.bot.send_message(chat_id, messages["wrong_value"])
+                    ctx.bot.send_message(chat_id, messages["wrong_value"])
+                    ctx.bot.send_message(chat_id, messages["try_again"])
 
     # handles the process of selling seats
     def upload_trip_process(self, update, ctx, chat_id, messages):
@@ -1019,54 +1023,53 @@ class GuzoBusBot:
 
         # checks if user is in select message step
         elif self.user_status[chat_id] == "weekly_trip_confirmation" and len(self.user_inputs[chat_id]) > 5:
-          try:
-            # validates whether the confirmation is submitted or not
-            if(update.message.text == messages["submit"]):
-                # if the user submits the confirmation then the system will send the data to the admin and delete the picture
-                filename = self.user_inputs[chat_id][5].file_path.split(
-                    "/")[-1]
-                self.user_inputs[chat_id][5].download("data/"+filename)
-                print(self.user_inputs[chat_id])
-                dname = self.user_inputs[chat_id][0]
-                dphone = self.user_inputs[chat_id][1]
-                dmessage = self.user_inputs[chat_id][4]
-                ctx.bot.send_message(
-                    chat_id, messages["weekly_trip_submitted"], reply_markup=creply_markup)
-                for adm in ADMIN:
-                    files = {"document": open(f"data/{filename}", "rb")}
-                    ctx.bot.send_message(adm,  "#new_weekly_trip_submitted"+"\n"+messages["name"]+": " +
-                                         dname + "\n" +
-                                         messages["phone"]+": 0" +
-                                         str(int(dphone))+"\n" +
-                                         messages["sent_message"]+": "+dmessage)
+            try:
+                # validates whether the confirmation is submitted or not
+                if(update.message.text == messages["submit"]):
+                    # if the user submits the confirmation then the system will send the data to the admin and delete the picture
+                    filename = self.user_inputs[chat_id][5].file_path.split(
+                        "/")[-1]
+                    self.user_inputs[chat_id][5].download("data/"+filename)
+                    print(self.user_inputs[chat_id])
+                    dname = self.user_inputs[chat_id][0]
+                    dphone = self.user_inputs[chat_id][1]
+                    dmessage = self.user_inputs[chat_id][4]
+                    ctx.bot.send_message(
+                        chat_id, messages["weekly_trip_submitted"], reply_markup=creply_markup)
+                    for adm in ADMIN:
+                        files = {"document": open(f"data/{filename}", "rb")}
+                        ctx.bot.send_message(adm,  "#new_weekly_trip_submitted"+"\n"+messages["name"]+": " +
+                                             dname + "\n" +
+                                             messages["phone"]+": 0" +
+                                             str(int(dphone))+"\n" +
+                                             messages["sent_message"]+": "+dmessage)
 
-                    resp = requests.post("https://api.telegram.org/bot" +
-                                         TOKEN+"/sendDocument?chat_id="+str(adm), files=files)
-                print(resp.status_code)
-                self.user_status.pop(chat_id, None)
-                self.user_section.pop(chat_id, None)
-                self.user_inputs.pop(chat_id, None)
-                os.remove(f"{CURRENT_DIR}/data/{filename}")
-                
+                        resp = requests.post("https://api.telegram.org/bot" +
+                                             TOKEN+"/sendDocument?chat_id="+str(adm), files=files)
+                    print(resp.status_code)
+                    self.user_status.pop(chat_id, None)
+                    self.user_section.pop(chat_id, None)
+                    self.user_inputs.pop(chat_id, None)
+                    os.remove(f"{CURRENT_DIR}/data/{filename}")
 
-            else:
-                self.user_status.pop(chat_id, None)
-                self.user_section.pop(chat_id, None)
-                self.user_inputs.pop(chat_id, None)
-                self.operator_menu(update, ctx)
-            valid = False
-          except Exception as e:
+                else:
+                    self.user_status.pop(chat_id, None)
+                    self.user_section.pop(chat_id, None)
+                    self.user_inputs.pop(chat_id, None)
+                    self.operator_menu(update, ctx)
+                valid = False
+            except Exception as e:
                 print("exception")
                 if str(e) == "Chat not found":
-                  print("Chat not fouond")
+                    print("Chat not fouond")
                 elif str(e) == "Forbidden: bot was blocked by the user":
-                  print("Bot Blocked by user")
+                    print("Bot Blocked by user")
                 else:
-                  print(e)
-                  # if the date has an error then the bot will redirect user back to passenger menu
-                  #ctx.bot.send_message(chat_id, messages["wrong_value"])
-                  ctx.bot.send_message(chat_id, messages["wrong_value"])
-                  ctx.bot.send_message(chat_id, messages["try_again"])
+                    print(e)
+                    # if the date has an error then the bot will redirect user back to passenger menu
+                    #ctx.bot.send_message(chat_id, messages["wrong_value"])
+                    ctx.bot.send_message(chat_id, messages["wrong_value"])
+                    ctx.bot.send_message(chat_id, messages["try_again"])
 
         elif self.user_status[chat_id] == "upload_weekly_file":
             # if the user sends message instead of image, the system will ask again
@@ -1247,50 +1250,51 @@ class GuzoBusBot:
                 ctx.bot.send_message(chat_id, messages["try_again"])
 
         elif self.user_status[chat_id] == "enter_pnr" and len(self.user_inputs[chat_id]) > 1:
-          try:
-            # validates whether the pnr is valid or not
-            valid = False
-            if(len(update.message.text) == 8):
-                valid = True
-            # if the pnr is valid then the bot will ask for a message
-            if valid:
-                if self.pnr_assigner(self.user_inputs[chat_id][0], self.user_inputs[chat_id][1], update.message.text):
-                    ctx.bot.send_message(
-                        chat_id, "Successfully Updated PNR")
-                    for adm in ADMIN:
-                        files = {"document": open(f"data/bookings.xlsx", 'rb')}
-                        resp = requests.post(
-                            "https://api.telegram.org/bot"+TOKEN+"/sendDocument?chat_id="+str(adm), files=files)
-                        print(resp)
-                    
-                    self.user_status.pop(chat_id, None)
-                    self.user_section.pop(chat_id, None)
-                    self.user_inputs.pop(chat_id, None)
-                    self.admin_menu(update, ctx)
-                else:
-                    ctx.bot.send_message(
-                        chat_id, "PNR not Updated")
-                    self.user_status.pop(chat_id, None)
-                    self.user_section.pop(chat_id, None)
-                    self.user_inputs.pop(chat_id, None)
-                    self.admin_menu(update, ctx)
+            try:
+                # validates whether the pnr is valid or not
+                valid = False
+                if(len(update.message.text) == 8):
+                    valid = True
+                # if the pnr is valid then the bot will ask for a message
+                if valid:
+                    if self.pnr_assigner(self.user_inputs[chat_id][0], self.user_inputs[chat_id][1], update.message.text):
+                        ctx.bot.send_message(
+                            chat_id, "Successfully Updated PNR")
+                        for adm in ADMIN:
+                            files = {"document": open(
+                                f"data/bookings.xlsx", 'rb')}
+                            resp = requests.post(
+                                "https://api.telegram.org/bot"+TOKEN+"/sendDocument?chat_id="+str(adm), files=files)
+                            print(resp)
 
-            # if the pnr is invalid then the bot will redirect user back to passenger menu
-            else:
-                ctx.bot.send_message(chat_id, messages["wrong_value"])
-                ctx.bot.send_message(chat_id, messages["try_again"])
-          except Exception as e:
+                        self.user_status.pop(chat_id, None)
+                        self.user_section.pop(chat_id, None)
+                        self.user_inputs.pop(chat_id, None)
+                        self.admin_menu(update, ctx)
+                    else:
+                        ctx.bot.send_message(
+                            chat_id, "PNR not Updated")
+                        self.user_status.pop(chat_id, None)
+                        self.user_section.pop(chat_id, None)
+                        self.user_inputs.pop(chat_id, None)
+                        self.admin_menu(update, ctx)
+
+                # if the pnr is invalid then the bot will redirect user back to passenger menu
+                else:
+                    ctx.bot.send_message(chat_id, messages["wrong_value"])
+                    ctx.bot.send_message(chat_id, messages["try_again"])
+            except Exception as e:
                 print("exception")
                 if str(e) == "Chat not found":
-                  print("Chat not fouond")
+                    print("Chat not fouond")
                 elif str(e) == "Forbidden: bot was blocked by the user":
-                  print("Bot Blocked by user")
+                    print("Bot Blocked by user")
                 else:
-                  print(e)
-                  # if the date has an error then the bot will redirect user back to passenger menu
-                  #ctx.bot.send_message(chat_id, messages["wrong_value"])
-                  ctx.bot.send_message(chat_id, messages["wrong_value"])
-                  ctx.bot.send_message(chat_id, messages["try_again"])
+                    print(e)
+                    # if the date has an error then the bot will redirect user back to passenger menu
+                    #ctx.bot.send_message(chat_id, messages["wrong_value"])
+                    ctx.bot.send_message(chat_id, messages["wrong_value"])
+                    ctx.bot.send_message(chat_id, messages["try_again"])
 
     def upload_proof(self, update, ctx):
         chat_id = update.effective_chat.id
@@ -1541,7 +1545,7 @@ class GuzoBusBot:
         if not update.message:
             user = update.callback_query
         reply_markup = ReplyKeyboardMarkup(
-            [["Add PNR"], ["Seats", "Bookings"], ["Operators", "Locations"],["English", "Amharic"]], resize_keyboard=True)
+            [["Add PNR"], ["Seats", "Bookings"], ["Operators", "Locations"], ["English", "Amharic"]], resize_keyboard=True)
 
         ctx.bot.send_message(chat_id, text="Welcome Admin",
                              reply_markup=reply_markup)
@@ -1605,7 +1609,7 @@ class GuzoBusBot:
             excel_file = 'data/seats.xlsx'
             df = pd.read_excel(excel_file)
             res = df.where(df['destination'] == destination).dropna()
-            #print(res)
+            # print(res)
             nbuses = 0
             for (xdate, xsource, xdestination, xseats, xbus, xprice) in res.values:
                 #print(str(xdate)+" - "+xsource+" - "+xdestination+" - "+ str(xseats)+ " - "+xbus)
@@ -1616,7 +1620,7 @@ class GuzoBusBot:
                 print(xdestination+" : "+destination)
                 print("--")
                 print("seats: "+str(xseats >= int(seats)))
-                
+
                 if(xsource == source):
                     # tempdate = str(datetime.strptime(
                     #    str(xdate), '%Y-%m-%d %H:%M:%S'))
